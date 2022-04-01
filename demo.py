@@ -14,19 +14,19 @@ from utils import load_coco_names, draw_boxes, get_boxes_and_inputs, get_boxes_a
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string(
-    'input_img', '', 'Input image')
+    'input_img', 'test00001.jpg', 'Input image')
 tf.app.flags.DEFINE_string(
-    'output_img', '', 'Output image')
+    'output_img', 'res00001.jpg', 'Output image')
 tf.app.flags.DEFINE_string(
-    'class_names', 'coco.names', 'File with class names')
+    'class_names', './models/coco.names', 'File with class names')
 tf.app.flags.DEFINE_string(
-    'weights_file', 'yolov3.weights', 'Binary file with detector weights')
+    'weights_file', './models/yolov3.weights', 'Binary file with detector weights')
 tf.app.flags.DEFINE_string(
-    'data_format', 'NCHW', 'Data format: NCHW (gpu only) / NHWC')
+    'data_format', 'NHWC', 'Data format: NCHW (gpu only) / NHWC')
 tf.app.flags.DEFINE_string(
     'ckpt_file', './saved_model/model.ckpt', 'Checkpoint file')
 tf.app.flags.DEFINE_string(
-    'frozen_model', '', 'Frozen tensorflow protobuf model')
+    'frozen_model', './saved_model/frozen_darknet_yolov3_model.pb', 'Frozen tensorflow protobuf model')
 tf.app.flags.DEFINE_bool(
     'tiny', False, 'Use tiny version of YOLOv3')
 tf.app.flags.DEFINE_bool(
@@ -36,7 +36,7 @@ tf.app.flags.DEFINE_integer(
     'size', 416, 'Image size')
 
 tf.app.flags.DEFINE_float(
-    'conf_threshold', 0.5, 'Confidence threshold')
+    'conf_threshold', 0.1, 'Confidence threshold')
 tf.app.flags.DEFINE_float(
     'iou_threshold', 0.4, 'IoU threshold')
 

@@ -1,0 +1,4 @@
+tensorflow==1.15.5
+numpy~=1.17.5
+Pillow~=9.0.1
+utils~=1.0.1

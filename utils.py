@@ -185,10 +185,9 @@ def non_max_suppression(predictions_with_boxes, confidence_threshold, iou_thresh
 
     result = {}
     for i, image_pred in enumerate(predictions):
-        shape = image_pred.shape
-        non_zero_idxs = np.nonzero(image_pred)
-        image_pred = image_pred[non_zero_idxs]
-        image_pred = image_pred.reshape(-1, shape[-1])
+        # Remove predictions if all the prediction vector is zero
+        # https://github.com/mystic123/tensorflow-yolo-v3/pull/105/files
+        image_pred = image_pred[np.any(image_pred, axis=-1)]
 
         bbox_attrs = image_pred[:, :5]
         classes = image_pred[:, 5:]
