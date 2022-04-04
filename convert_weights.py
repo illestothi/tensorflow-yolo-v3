@@ -10,17 +10,17 @@ from utils import load_coco_names, load_weights
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string(
-    'class_names', 'coco.names', 'File with class names')
+    'class_names', './models/yolov3_custom_2022_02_03_01.names', 'File with class names')
 tf.app.flags.DEFINE_string(
-    'weights_file', 'yolov3.weights', 'Binary file with detector weights')
+    'weights_file', './models/yolov3_custom_2022_02_03_01.weights', 'Binary file with detector weights')
 tf.app.flags.DEFINE_string(
-    'data_format', 'NCHW', 'Data format: NCHW (gpu only) / NHWC')
+    'data_format', 'NHWC', 'Data format: NCHW (gpu only) / NHWC')
 tf.app.flags.DEFINE_bool(
     'tiny', False, 'Use tiny version of YOLOv3')
 tf.app.flags.DEFINE_bool(
     'spp', False, 'Use SPP version of YOLOv3')
 tf.app.flags.DEFINE_string(
-    'ckpt_file', './saved_model/model.ckpt', 'Chceckpoint file')
+    'ckpt_file', './saved_model/yolov3_custom_2022_02_03_01.ckpt', 'Chceckpoint file')
 
 
 def main(argv=None):
