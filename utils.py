@@ -8,8 +8,8 @@ from PIL import ImageDraw, Image
 def get_boxes_and_inputs_pb(frozen_graph):
 
     with frozen_graph.as_default():
-        boxes = tf.get_default_graph().get_tensor_by_name("output_boxes:0")
-        inputs = tf.get_default_graph().get_tensor_by_name("inputs:0")
+        boxes = tf.compat.v1.get_default_graph().get_tensor_by_name("output_boxes:0")
+        inputs = tf.compat.v1.get_default_graph().get_tensor_by_name("inputs:0")
 
     return boxes, inputs
 
@@ -49,7 +49,7 @@ def freeze_graph(sess, output_graph):
 
     output_graph_def = tf.graph_util.convert_variables_to_constants(
         sess,
-        tf.get_default_graph().as_graph_def(),
+        tf.compat.v1.get_default_graph().as_graph_def(),
         output_node_names.split(",")
     )
 

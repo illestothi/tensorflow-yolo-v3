@@ -16,17 +16,17 @@ FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string(
     'input_img', 'test00001.jpg', 'Input image')
 tf.app.flags.DEFINE_string(
-    'output_img', 'res00001.jpg', 'Output image')
+    'output_img', 'res00002.jpg', 'Output image')
 tf.app.flags.DEFINE_string(
-    'class_names', './models/coco.names', 'File with class names')
+    'class_names', './models/yolov3_custom_2022_02_03_01.names', 'File with class names')
 tf.app.flags.DEFINE_string(
-    'weights_file', './models/yolov3.weights', 'Binary file with detector weights')
+    'weights_file', './models/yolov3_custom_2022_02_03_01.weights', 'Binary file with detector weights')
 tf.app.flags.DEFINE_string(
     'data_format', 'NHWC', 'Data format: NCHW (gpu only) / NHWC')
 tf.app.flags.DEFINE_string(
-    'ckpt_file', './saved_model/model.ckpt', 'Checkpoint file')
+    'ckpt_file', '', 'Checkpoint file')  # ./saved_model/yolov3_custom_2022_02_03_01.ckpt
 tf.app.flags.DEFINE_string(
-    'frozen_model', './saved_model/frozen_darknet_yolov3_model.pb', 'Frozen tensorflow protobuf model')
+    'frozen_model', './saved_model/frozen_yolov3_custom_2022_02_03_01.pb', 'Frozen tensorflow protobuf model')
 tf.app.flags.DEFINE_bool(
     'tiny', False, 'Use tiny version of YOLOv3')
 tf.app.flags.DEFINE_bool(
@@ -45,9 +45,9 @@ tf.app.flags.DEFINE_float(
 
 def main(argv=None):
 
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=FLAGS.gpu_memory_fraction)
+    gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=FLAGS.gpu_memory_fraction)
 
-    config = tf.ConfigProto(
+    config = tf.compat.v1.ConfigProto(
         gpu_options=gpu_options,
         log_device_placement=False,
     )
@@ -61,11 +61,11 @@ def main(argv=None):
 
         t0 = time.time()
         frozenGraph = load_graph(FLAGS.frozen_model)
-        print("Loaded graph in {:.2f}s".format(time.time()-t0))
+        print("Loaded FROZEN graph in {:.2f}s".format(time.time()-t0))
 
         boxes, inputs = get_boxes_and_inputs_pb(frozenGraph)
 
-        with tf.Session(graph=frozenGraph, config=config) as sess:
+        with tf.compat.v1.Session(graph=frozenGraph, config=config) as sess:
             t0 = time.time()
             detected_boxes = sess.run(
                 boxes, feed_dict={inputs: [img_resized]})
@@ -73,10 +73,13 @@ def main(argv=None):
     else:
         if FLAGS.tiny:
             model = yolo_v3_tiny.yolo_v3_tiny
+            print("USE tiny version of Yolo model")
         elif FLAGS.spp:
             model = yolo_v3.yolo_v3_spp
+            print("Use SPP version of YOLOv3")
         else:
             model = yolo_v3.yolo_v3
+            print("Use SIMPLE version of YOLOv3")
 
         boxes, inputs = get_boxes_and_inputs(model, len(classes), FLAGS.size, FLAGS.data_format)
 
@@ -95,6 +98,7 @@ def main(argv=None):
                                          confidence_threshold=FLAGS.conf_threshold,
                                          iou_threshold=FLAGS.iou_threshold)
     print("Predictions found in {:.2f}s".format(time.time() - t0))
+    print("Boxes:", filtered_boxes)
 
     draw_boxes(filtered_boxes, img, classes, (FLAGS.size, FLAGS.size), True)
 
@@ -102,4 +106,4 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.app.run()
